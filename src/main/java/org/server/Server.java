@@ -12,6 +12,7 @@ public class Server {
 
     public static void main(String[] args) {
         try {
+
             // Creating a new serverSocket object
             ServerSocket serverSocket = new ServerSocket(4221);
 
