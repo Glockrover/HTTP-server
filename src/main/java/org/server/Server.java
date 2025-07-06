@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.ServerSocket;
 
 public class Server {
+    public Server(int testPort) {
+    }
+
     public static void main(String[] args) {
         try {
             // Creating a new serverSocket object
