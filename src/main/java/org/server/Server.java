@@ -1,39 +1,40 @@
 package org.server;
 
-
 import java.io.IOException;
+
+import java.io.OutputStream;
 import java.net.ServerSocket;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+import java.net.Socket;
+
 
 public class Server {
-
     public static void main(String[] args) {
-        try {
+        // You can use print statements as follows for debugging, they'll be visible when running tests.
+        System.out.println("Logs from your program will appear here!");
 
-            // Creating a new serverSocket object
+//     Uncomment this block to pass the first stage
+        try {
             ServerSocket serverSocket = new ServerSocket(4221);
 
+            // Since the tester restarts your program quite often, setting SO_REUSEADDR
+            // ensures that we don't run into 'Address already in use' errors
             serverSocket.setReuseAddress(true);
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://www.example.com"))
-                    .build();
-            serverSocket.accept();
+
+            Socket clientSocket = serverSocket.accept(); // Wait for connection from client.
             System.out.println("accepted new connection");
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            // Write HTTP 200 OK response to client
+            OutputStream outputStream = clientSocket.getOutputStream();
+            String httpResponse = "HTTP/1.1 200 OK\r\n\r\n";
+            outputStream.write(httpResponse.getBytes());
 
-            // Access and print response details
-            System.out.println("Status Code: " + response.statusCode());
-            System.out.println("Headers: " + response.headers());
-            System.out.println("Body: " + response.body());
+            // Close streams and sockets
+            outputStream.close();
+            clientSocket.close();
+            serverSocket.close();
+
         } catch (IOException e) {
             System.out.println("IOException: " + e.getMessage());
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
         }
     }
 }
